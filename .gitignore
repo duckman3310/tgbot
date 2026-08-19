@@ -1,0 +1,21 @@
+# Исполняемые файлы и бинарники
+*.exe
+*.exe-
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/
+
+# Переменные окружения и секреты
+.env
+
+# Файлы IDE и ОС
+.vscode/
+.idea/
+.DS_Store
+
+tg-audio-bot
+cookies.txt
+bottoken.go
