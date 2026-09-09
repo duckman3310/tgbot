@@ -19,3 +19,5 @@ bin/
 tg-audio-bot
 cookies.txt
 bottoken.go
+config.toml
+/build

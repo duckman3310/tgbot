@@ -1,18 +1,43 @@
-принимает ссылку на видео ютуб, скачивает аудио через yt-dlp и отправляет в чат в .m4a 
+# Tg Audio Downloader Bot
 
-| Команда / Флаг | Описание |  
-| :--- | :--- |  
-| ссылка | скачивает и отправляет аудио | 
-| `-l` | Отправляет лог работы yt-dlp | 
-| `/info` | Отправляет инфу о боте | 
+Тгбот на Go для скачивания аудиодорожек из YouTube, принимает ссылку на видео и отправляет файлом в .m4a (AAC, 192 kbps, 44.1 kHz). Использует `yt-dlp` для скачивания и `ffmpeg` для его работы 
+
+для использования скачиваем готовый бинарник и запускаем, или [собираем свой из исходников](#запуск-и-компиляция-исходников). При первом запуске бот создаст рядом `config.toml`, в него пишем токен бота, описание и перезапускаем. После в чате будет доступен следующий функционал
+
+| Команда / Флаг | Описание |
+| :--- | :--- |
+| `<ссылка>` | Скачивает аудио по ссылке и отправляет `.m4a` файлом в чат |
+| `-l` | Флаг к ссылке. Отправляет текстовый лог работы `yt-dlp` вместе с аудио |
+| `/info` | Выводит информацию о боте |
+
+
+# Запуск и сборка исходников 
+
+| Зависимость | Описание | Установка (Debian / Ubuntu) |
+| :--- | :--- | :--- |
+| **Go** (1.21+) | Компилятор и среда выполнения Go | `sudo apt install golang-go` *(или с [официального сайта](https://go.dev/doc/install))* |
+| **yt-dlp** | Загрузка медиапотоков с YouTube | `sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp && sudo chmod a+rx /usr/local/bin/yt-dlp` |
+| **ffmpeg** | Конвертация и извлечение чистой аудиодорожки в M4A | `sudo apt install ffmpeg` |
+| **Node.js** | Исполнение JS-скриптов YouTube (для флага `--js-runtimes node` и решения n-sig) | `sudo apt install nodejs` |
+| **telegram-bot-api** | Библиотека Go для работы с Telegram Bot API | `go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5` |
+| **cookies.txt** *(опционально)* | Файл авторизации в корне проекта для обхода блокировок YouTube | Экспорт из браузера через расширение [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc) |
 
 ---
 
-| Зависимости | Описание | Как скачать |
-| :--- | :--- | :--- |  
-| [Go](https://go.dev/) (1.21+) | сам go, тут понятно |
-| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | yt-dlp скачивает видео с ютуб | забыл
-| [telegram-bot-api](github.com/go-telegram-bot-api/telegram-bot-api/v5) | api для бота, скачиваем через | `go get -u github.com/go-telegram-bot-api/telegram-bot-api/v5`
-| **ffmpeg** | иногда тг воспринимает форматы типо .opus как голосовухи, на всякие случай перед отправкой все конвертируется в .m4a | должен быть по дефолту
-| **Node.js** | тут не шарю, но джемини говорит что для скачивания yt-dlp нужно проходить js ребусы, для этого js и скачиваем | хз, с офиц сайта
-| **кукисы** | тут тоже, но чтоб проблем у yt-dlp не было скармливаем ему куки (файл cookies.txt кидаем в корневую папку проэкта)| Получить их можно через например [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
+### Сборка и запуск
+1. клонируем репозиторий 
+```
+git clone https://github.com/duckman3310/tgbot.git
+```
+2. переходим в директорию с main.go
+```
+cd cmd/bot
+```
+2. компелируем бинарник
+```
+go build -o tg-audio-bot 
+```
+3. запускаем 
+```
+./tg-audio-bot
+```
