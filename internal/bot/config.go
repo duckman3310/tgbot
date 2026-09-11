@@ -32,15 +32,17 @@ var commandsConfig = tgbotapi.SetMyCommandsConfig{
 }
 
 type BotCfg struct {
-	Token    string `toml:"bot_token"`
-	InfoText string `toml:"bot_infotext"`
+	Token       string `toml:"bot_token"`
+	InfoText    string `toml:"bot_infotext"`
+	SongQuality string `toml:"song_quality"`
 }
 
 // NewBotCfg создает шаблонный конфиг бота
 func NewBotCfg() *BotCfg {
 	return &BotCfg{
-		Token:    "Your bot token",
-		InfoText: "Your bot info",
+		Token:       "Your bot token",
+		InfoText:    "",
+		SongQuality: "default",
 	}
 }
 
@@ -58,23 +60,25 @@ func (cfg *BotCfg) Load() error {
 	// загрузка конфига
 	_, err := toml.DecodeFile("./config.toml", cfg)
 
-	// если файла нету
+	// если файла нет
 	if errors.Is(err, os.ErrNotExist) {
 
 		log.Printf(Red + "config.toml не найден, будет создан новый" + Reset)
 
-		// пробуем создать новый конфиг
-		file, err := os.Create("./config.toml")
-		if err != nil {
+		// Шаблон конфига с комментариями
+		defaultContent := `# Токен бота от @BotFather
+			token = "Your bot token"
+
+			# Текст сообщения для команды /info
+			info_text = ""
+
+			# Качество звука: "default" или "max"
+			song_quality = "default"
+			`
+
+		// Записываем дефолтный конфиг прямо в файл
+		if err := os.WriteFile("./config.toml", []byte(defaultContent), 0644); err != nil {
 			log.Printf(Red + "Не удалось создать новый config.toml" + Reset)
-			return err
-		}
-
-		defer file.Close()
-
-		// записываем дефолтный конфиг в файл
-		if err := toml.NewEncoder(file).Encode(cfg); err != nil {
-			log.Printf(Red + "Не удалось записать шаблон в созданый config.toml" + Reset)
 			return err
 		}
 

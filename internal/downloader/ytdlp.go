@@ -22,23 +22,65 @@ const (
 )
 
 // скачивает аудио дорожку в формате m4a из видео на ютуб по ссылке
-func YtdlpDownload(outputTemplate, url string) ([]string, error) {
+func YtdlpDownload(outputTemplate, url string, quality string) ([]string, error) {
 
 	// создаем пустой лог
 	downloadLog := []string{}
 
+	var cmd *exec.Cmd
+
 	// создаем комманду для скачивания
-	cmd := exec.Command(
-		"yt-dlp",
-		"--newline",
-		"--js-runtimes", "node",
-		"-f", "ba",
-		"-x",
-		"--audio-format", "m4a",
-		"--audio-quality", "192K",
-		"-o", outputTemplate,
-		url,
-	)
+	if quality == "max" {
+
+		// (скачивает в максимальном качестве)
+
+		// при обычной загрузке во время конвертации
+		// какого нибуть .opus (который тг воспринивает как голосовые) в .m4a
+		// ffmpeg, изза ограничений в размере часть звука срезается (так называемый true peak),
+		// и если вы очень ушастый высокие частоты начинают свистеть/песочить.
+
+		// решается это бустом битрейта почти в два раза (вместо лока на 192кб),
+		// изза чего конвертация проесходит либо без, либо почти без потерь
+		// но и вес файла увеличивается тоже два раза
+
+		// бонусом строчка "--postprocessor-args", "ExtractAudio:-af volume=-1.0dB"
+		// дополнительно спасает от того самого true peak (если верить gimini).
+		// это дает заметный прирост к деталям и четкости звука
+
+		cmd = exec.Command(
+			"yt-dlp",
+			"--newline",
+			"--js-runtimes", "node",
+			"-f", "ba",
+			"-x",
+			"--audio-format", "m4a",
+			"--audio-quality", "0",
+			"--postprocessor-args", "ExtractAudio:-af volume=-1.0dB",
+			"--write-thumbnail",           // Скачать обложку в отдельный файл
+			"--embed-thumbnail",           // Вшить внутрь m4a (для офлайн-плееров)
+			"--convert-thumbnails", "jpg", // Формат JPG для совместимости
+			"-o", outputTemplate,
+			url,
+		)
+	} else {
+
+		// (скачивает в обычном (тоже крутом) качестве)
+
+		cmd = exec.Command(
+			"yt-dlp",
+			"--newline",
+			"--js-runtimes", "node",
+			"-f", "ba",
+			"-x",
+			"--audio-format", "m4a",
+			"--audio-quality", "192K",
+			"--write-thumbnail",           // Скачать обложку в отдельный файл
+			"--embed-thumbnail",           // Вшить внутрь m4a (для офлайн-плееров)
+			"--convert-thumbnails", "jpg", // Формат JPG для совместимости
+			"-o", outputTemplate,
+			url,
+		)
+	}
 
 	pipeReader, pipeWriter := io.Pipe()
 
