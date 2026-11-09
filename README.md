@@ -19,12 +19,12 @@
 (За скачивание отвечает [yt-dlp](https://github.com/yt-dlp/yt-dlp), настройки его вызова находятся в файле [ytdlp.go](./internal/downloader/ytdlp.go))
 
 ### Запуск
-Можно скачать релиз, или собрать самому, одной из комманд ниже. При первом запуске бот создаст рядом `config.toml`, его нужно заполнить и перезапустить
+Для сборки нужен [Go](https://go.dev/) 1.25.3+. При первом запуске бот создаст рядом `config.toml`, его нужно заполнить и перезапустить
 
 | ОС | Комманда для сборки |
 | :--- | :--- |
-| linux x86-64 | `GOOS=linux   GOARCH=amd64 go build -o build/ducky-linux-amd64 ./cmd/bot` | 
-| linux arm64 | `GOOS=linux   GOARCH=arm64 go build -o build/ducky-linux-arm64 ./cmd/bot` |
-| windows x86-64 | `GOOS=windows GOARCH=amd64 go build -o build/ducky-windows-amd64.exe ./cmd/bot` |
-| macos x86-64 | `GOOS=darwin  GOARCH=amd64 go build -o build/ducky-darwin-amd64 ./cmd/bot`| 
-| macos arm64 | `GOOS=darwin GOARCH=arm64 go build -o build/ducky-darwin-arm64  ./cmd/bot`|
+| linux x86-64 | `GOOS=linux   GOARCH=amd64 go build -o build/bot-linux-amd64 ./cmd/bot` | 
+| linux arm64 | `GOOS=linux   GOARCH=arm64 go build -o build/bot-linux-arm64 ./cmd/bot` |
+| windows x86-64 | `GOOS=windows GOARCH=amd64 go build -o build/bot-windows-amd64.exe ./cmd/bot` |
+| macos x86-64 | `GOOS=darwin  GOARCH=amd64 go build -o build/bot-darwin-amd64 ./cmd/bot`| 
+| macos arm64 | `GOOS=darwin GOARCH=arm64 go build -o build/bot-darwin-arm64  ./cmd/bot`|
