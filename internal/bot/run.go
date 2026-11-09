@@ -16,7 +16,7 @@ func (bot *Bot) Run() {
 		logErr("Не удалось отправить команды", err)
 	}
 
-	logBot(fmt.Sprintf("Ducky запущен, cобран на коммите: %s", GetVersion()))
+	logBot(fmt.Sprintf("Бот запущен, cобран на коммите: %s", GetVersion()))
 
 	for update := range updates {
 

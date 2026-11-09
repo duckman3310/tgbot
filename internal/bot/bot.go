@@ -1,9 +1,9 @@
 package bot
 
 import (
-	"ducky/internal/config"
 	"os"
 	"runtime/debug"
+	"tgbot/internal/config"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )

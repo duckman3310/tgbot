@@ -1,12 +1,12 @@
 package bot
 
 import (
-	"ducky/internal/downloader"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"tgbot/internal/downloader"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"

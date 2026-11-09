@@ -1,6 +1,6 @@
 package main
 
-import "ducky/internal/bot"
+import "tgbot/internal/bot"
 
 func main() {
 	Bot := bot.New()
