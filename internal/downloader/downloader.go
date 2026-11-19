@@ -1,3 +1,4 @@
+// Package downloader provides bot utilities for parse requests, download audio or audio info using yt-dlp
 package downloader
 
 import (
@@ -23,16 +24,19 @@ type readResult struct {
 }
 
 type DownloadRequest struct {
-	URL              string
+	URL string
+
+	// DownloadSections is passed to yt-dlp as --download-sections value.
+	// Format is "[*]start-end" in seconds or HH:MM:SS, e.g. "*0:30-1:00".
+	// Empty string means the whole media is downloaded.
 	DownloadSections string
 }
 
 type AudioInfo struct {
 	Title    string `json:"title"`
-	Uploader string `json:"uploader"`
+	Uploader string `json:"uploader"` // channel name as reported by yt-dlp, not necessarily the artist
 }
 
-// скачивает информацию о треке (название и имя исполнителя) по ссылке на видео
 func DownloadAudioInfo(ctx context.Context, url string) (AudioInfo, error) {
 
 	var audioInfo AudioInfo
@@ -117,7 +121,11 @@ func DownloadAudioInfo(ctx context.Context, url string) (AudioInfo, error) {
 	return audioInfo, nil
 }
 
-// скачивает и возвращяет трек слайсом байт по ссылке вызовом yt-dlp, для сборки запроса есть NewDownloadRequest()
+// DownloadAudio downloads a file as a byte slice using yt-dlp instead of
+// writing it to disk. It returns an error if yt-dlp fails or if ctx times out.
+//
+// It may also return valid data together with an error if yt-dlp's failure
+// was non-critical (e.g. warnings only).
 func DownloadAudio(ctx context.Context, request DownloadRequest) ([]byte, error) {
 
 	// сборка вызова
@@ -195,7 +203,6 @@ func DownloadAudio(ctx context.Context, request DownloadRequest) ([]byte, error)
 	return outResult.data, nil
 }
 
-// возвращает вывод сканера в канал
 func listenScanner(resultCh chan<- scanResult, scanner *bufio.Scanner) {
 	defer close(resultCh)
 
@@ -213,7 +220,6 @@ func listenScanner(resultCh chan<- scanResult, scanner *bufio.Scanner) {
 	resultCh <- scanResult{lines: lines, err: nil}
 }
 
-// читает байты из потока, возвращяет их слайсом если лимит не превышен
 func readBytes(resultCh chan<- readResult, r io.ReadCloser, limit int64) {
 	defer close(resultCh)
 	defer r.Close()
@@ -231,6 +237,7 @@ func readBytes(resultCh chan<- readResult, r io.ReadCloser, limit int64) {
 	resultCh <- readResult{data: data}
 }
 
+// NewDownloadRequest parses input into arguments and return it as struct
 func NewDownloadRequest(input string) DownloadRequest {
 	var request DownloadRequest
 
