@@ -33,8 +33,9 @@ type DownloadRequest struct {
 }
 
 type AudioInfo struct {
-	Title    string `json:"title"`
-	Uploader string `json:"uploader"` // channel name as reported by yt-dlp, not necessarily the artist
+	Title    string
+	Uploader string // channel name as reported by yt-dlp, not necessarily the artist
+	ext      string
 }
 
 func DownloadAudioInfo(ctx context.Context, url string) (AudioInfo, error) {
@@ -45,8 +46,9 @@ func DownloadAudioInfo(ctx context.Context, url string) (AudioInfo, error) {
 		"--no-playlist",
 		"--no-warnings",
 		"--no-progress",
-		"--print", "%(title)s", // вывод названия трека
-		"--print", "%(uploader)s", // вывод имени исполнителя
+		"--print", "title", // названия трека
+		"--print", "uploader", // имени исполнителя
+		"--print", "ext", // разшерение файла
 		url,
 	}
 
@@ -112,6 +114,7 @@ func DownloadAudioInfo(ctx context.Context, url string) (AudioInfo, error) {
 
 	audioInfo.Title = outResult.lines[0]
 	audioInfo.Uploader = outResult.lines[1]
+	audioInfo.ext = outResult.lines[2]
 
 	// если yt-dlp завершен успешно, но с ошибками или варнингами
 	if len(errResult.lines) > 0 {
