@@ -35,7 +35,7 @@ func (bot *Bot) Run() {
 		}
 
 		if strings.HasPrefix(messageText, "http://") || strings.HasPrefix(messageText, "https://") {
-			go bot.downloadAndSend(chatID, messageID, messageText)
+			go bot.handleRequest(chatID, messageID, messageText)
 		}
 
 	}

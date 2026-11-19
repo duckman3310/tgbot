@@ -132,19 +132,22 @@ func DownloadAudioInfo(ctx context.Context, url string) (AudioInfo, error) {
 func DownloadAudio(ctx context.Context, request DownloadRequest) ([]byte, error) {
 
 	// сборка вызова
-	cmd := exec.CommandContext(ctx, "yt-dlp",
+	args := []string{
 		"-f", "bestaudio/best",
-		"-o", "-", // файл сразу в stdout
-
-		"--no-playlist",
+		"-o", "-",
 		"--no-playlist",
 		"--no-progress",
 		"--no-warnings",
 		"--quiet",
+	}
 
-		request.URL,
-		request.DownloadSections,
-	)
+	if request.DownloadSections != "" {
+		args = append(args, "--download-sections", request.DownloadSections)
+	}
+
+	args = append(args, request.URL)
+
+	cmd := exec.CommandContext(ctx, "yt-dlp", args...)
 
 	// создание пайпов
 	stdout, err := cmd.StdoutPipe()
