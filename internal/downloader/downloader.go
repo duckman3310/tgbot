@@ -35,7 +35,7 @@ type DownloadRequest struct {
 type AudioInfo struct {
 	Title    string
 	Uploader string // channel name as reported by yt-dlp, not necessarily the artist
-	ext      string
+	Ext      string
 }
 
 func DownloadAudioInfo(ctx context.Context, url string) (AudioInfo, error) {
@@ -114,7 +114,7 @@ func DownloadAudioInfo(ctx context.Context, url string) (AudioInfo, error) {
 
 	audioInfo.Title = outResult.lines[0]
 	audioInfo.Uploader = outResult.lines[1]
-	audioInfo.ext = outResult.lines[2]
+	audioInfo.Ext = outResult.lines[2]
 
 	// если yt-dlp завершен успешно, но с ошибками или варнингами
 	if len(errResult.lines) > 0 {
