@@ -14,5 +14,6 @@ bin/
 cookies.txt
 config.toml
 /build
+/builds
 /internal/parser
 build.sh
